@@ -1,56 +1,43 @@
-# Welcome to your Expo app 👋
+# FightingGameGeneralMemo
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A memo app for fighting games in general. Record and manage combos, setups, and character matchup notes in a free-form format that isn't tied to any specific game's terminology.
 
-## Get started
+## Goals
 
-1. Install dependencies
+- Centralize combo, setup, and matchup notes in one place
+- Avoid hardcoding any game- or character-specific names/moves into the app; let users enter everything freely
+- Support sorting and searching notes by tag
 
-   ```bash
-   npm install
-   ```
+## Key Features (Planned)
 
-2. Start the app
+- Create, edit, and view memos (combos / setups / matchup notes)
+- View memos while offline
+- Sync across devices via a shared account (Windows / iPhone, etc.)
+- Sort and search by tag
 
-   ```bash
-   npx expo start
-   ```
+## Tech Stack
 
-In the output, you'll find options to open the app in a
+- React Native + Expo (TypeScript)
+- State management: useState → Zustand (migrating as learning progresses)
+- Data persistence: AsyncStorage → expo-sqlite → cloud DB (migrating as learning progresses)
+- Authentication / account sharing: under consideration
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Release Policy
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- Planned for release on app stores (with ads)
+- Game-specific names (character names, move names, etc.) are not handled by the app itself; left entirely to free-form user input
 
-## Get a fresh project
+## Progress Checklist
 
-When you're ready, run:
+- [x] Hand-drawn UI design / icon selection
+- [ ] Create Expo project
+- [ ] Implement screen navigation
+- [ ] Implement state management
+- [ ] Implement DB schema
+- [ ] Implement authentication / account sharing
+- [ ] Integrate ad SDK (final stage)
+- [ ] Store review prep / privacy policy (final stage)
 
-```bash
-npm run reset-project
-```
+## Notes
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-### Other setup steps
-
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- This repository is maintained for personal learning and development purposes
