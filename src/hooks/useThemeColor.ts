@@ -1,8 +1,8 @@
-import { Colors } from "@/styles/Colors";
+import { Colors, type ColorKey } from "@/styles/Colors";
 import { useColorScheme } from "react-native";
 
 export function useThemeColor(
-  colorName: keyof typeof Colors.light,
+  colorName: ColorKey,
   overrides?: { light?: string; dark?: string },
 ) {
   const scheme = useColorScheme();

@@ -1,9 +1,11 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Header } from "@/components/features/header";
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { StyleSheet, View } from "react-native";
 
 export default function Index() {
   return (
     <View style={styles.container}>
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
+      <Header />
     </View>
   );
 }
@@ -11,7 +13,6 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: useThemeColor("background"),
   },
 });

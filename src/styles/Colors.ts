@@ -18,3 +18,5 @@ export const Colors = {
     border: "#232A34",
   },
 };
+
+export type ColorKey = keyof typeof Colors.light;
