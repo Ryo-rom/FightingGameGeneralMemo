@@ -1,5 +1,5 @@
 import { Icons, type IconKey } from "@/data/constants/icons";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useTheme } from "@/hooks/useTheme";
 import {
   Feather,
   FontAwesome,
@@ -11,7 +11,7 @@ import {
 type Props = { icon: IconKey; size?: number; color?: string };
 
 export function Icon({ icon, size = 24, color }: Props) {
-  const themeColor = useThemeColor("icon");
+  const themeColor = useTheme().icon;
   const i = Icons[icon];
   const c = color ?? themeColor;
 

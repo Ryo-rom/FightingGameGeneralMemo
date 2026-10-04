@@ -1,10 +1,11 @@
 import { Header } from "@/components/features/header";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { useTheme } from "@/hooks/useTheme";
 import { StyleSheet, View } from "react-native";
 
 export default function Index() {
+  const theme = useTheme();
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Header />
     </View>
   );
@@ -13,6 +14,5 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: useThemeColor("background"),
   },
 });
