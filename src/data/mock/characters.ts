@@ -7,4 +7,5 @@ export const mockCharacters: Characters[] = [
   { chid: 4, name: "Goro" },
   { chid: 5, name: "Rokuro" },
   { chid: 6, name: "ABCDEFGHIJKLMNOPQRSTUVWXYG" },
+  { chid: 7, name: "あいうえおかきくけこさしすせそたちつてと" },
 ];
