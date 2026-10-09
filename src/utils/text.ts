@@ -1,7 +1,7 @@
 function charWidth(ch: string): number {
   const c = ch.codePointAt(0) ?? 0;
   if (c <= 0x7e || (c >= 0xff61 && c <= 0xff9f)) return 1;
-  return 2;
+  return 1.5;
 }
 
 /**
