@@ -1,16 +1,24 @@
 import { Icon } from "@/components/common/Icon";
 import { useCharacters } from "@/hooks/useCharacters";
+import { useSelectedCharacterStore } from "@/hooks/useSelectedCharacterStore";
 import { useTheme } from "@/hooks/useTheme";
+import { shortenText } from "@/utils/text";
 
 import { Host, Picker } from "@expo/ui";
 import { Link } from "expo-router";
-import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 export function Header() {
   const theme = useTheme();
   const characters = useCharacters();
-  const [charaID, setCharaID] = useState(characters[0].chid);
+  const { selectedChara, setSelectedChara } = useSelectedCharacterStore();
+  const onChange = (value: number) => {
+    const select = characters.find((chr) => {
+      return chr.chid === value;
+    });
+    if (!select) throw new Error(`Unknown chid: ${value}`);
+    setSelectedChara(select);
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.card }]}>
@@ -18,9 +26,13 @@ export function Header() {
         <Icon icon="setting" />
       </Link>
       <Host matchContents={{ vertical: true }} style={{ flex: 5 }}>
-        <Picker selectedValue={charaID} onValueChange={setCharaID}>
+        <Picker selectedValue={selectedChara.chid} onValueChange={onChange}>
           {characters.map((c) => (
-            <Picker.Item key={c.chid} label={c.name} value={c.chid} />
+            <Picker.Item
+              key={c.chid}
+              label={shortenText(c.name)}
+              value={c.chid}
+            />
           ))}
         </Picker>
       </Host>
