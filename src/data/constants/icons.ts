@@ -39,6 +39,8 @@ export const Icons = {
   next: { family: "MaterialCommunityIcons", name: "chevron-right" },
   delete: { family: "Feather", name: "delete" },
   check: { family: "MaterialCommunityIcons", name: "check-circle-outline" },
+  editCheck: { family: "Feather", name: "check-circle" },
+  info: { family: "Feather", name: "info" },
 } as const;
 
 export type IconKey = keyof typeof Icons;
