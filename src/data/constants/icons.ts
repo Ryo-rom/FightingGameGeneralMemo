@@ -1,7 +1,7 @@
 export const Icons = {
   wholeEdit: { family: "MaterialIcons", name: "edit-note" },
   sort: { family: "MaterialCommunityIcons", name: "sort" },
-  add: { family: "Ionicons", name: "add-circle-outline" },
+  add: { family: "Ionicons", name: "add-circle" },
   edit: { family: "FontAwesome", name: "edit" },
   setting: { family: "Ionicons", name: "settings-sharp" },
   pullDown: {
@@ -39,7 +39,7 @@ export const Icons = {
   next: { family: "MaterialCommunityIcons", name: "chevron-right" },
   delete: { family: "Feather", name: "delete" },
   check: { family: "MaterialCommunityIcons", name: "check-circle-outline" },
-  editCheck: { family: "Feather", name: "check-circle" },
+  editCheck: { family: "Ionicons", name: "checkmark-circle" },
   info: { family: "Feather", name: "info" },
 } as const;
 
