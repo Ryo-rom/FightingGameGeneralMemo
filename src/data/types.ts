@@ -1,13 +1,22 @@
-export type Buttons = { bid: number; name: string; index: number };
-export type Characters = { chid: number; name: string };
+export type Buttons = { bid: number; bName: string; index: number };
+export type Characters = { chid: number; cName: string };
 
-/**@remarks comboの技と技の間は_区切り */
+/**@remarks Combo is separated by underscores between moves */
 export type Combos = { coid: number; combo: string };
-/**@remarks type 0: 2値(valueが0ならfalse, 1ならtrue), 1: 整数値 */
+
+/**
+ * @remarks
+ * - Type 0: Binary value (value is 1 by default; 0 is omitted).
+ * - Type 1: Integer value. */
 export type Tags = {
   tid: number;
-  name: string;
   coid: number;
+  tName: string;
   type: number;
   value: number;
+};
+
+export type ComboWithTags = {
+  cmb: Combos;
+  tags: Tags[];
 };
