@@ -1,4 +1,4 @@
-import { initializeDB } from "@/services/storage/initializeDB";
+import { initializeDB } from "@/services/repositories/initializeDB";
 import { Stack } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
 import { Suspense } from "react";
