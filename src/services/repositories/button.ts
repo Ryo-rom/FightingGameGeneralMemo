@@ -1,6 +1,8 @@
 import type { Buttons } from "@/data/types";
 import { runQuery } from "@/utils/repository";
 import { SQLiteDatabase } from "expo-sqlite";
+import { deleteButtonSetByBid } from "./buttonSet";
+import { deletePresetByBid } from "./presets";
 
 export async function insertButton(db: SQLiteDatabase, newButtonName: string) {
   try {
@@ -31,16 +33,31 @@ export async function updateButton(
   }
 }
 
-export async function deleteButton(db: SQLiteDatabase, btn: Buttons) {
+export async function deleteButton(
+  db: SQLiteDatabase,
+  bid: number,
+  bName: string,
+) {
   try {
-    await runQuery(db, `DELETE FROM button WHERE bid=? AND bName=?`, [
-      btn.bid,
-      btn.bName,
-    ]);
+    await db.withTransactionAsync(async () => {
+      await runQuery(db, `DELETE FROM button WHERE bid=? AND bName=?`, [
+        bid,
+        bName,
+      ]);
+      await deleteButtonSetByBid(db, bid);
+      await deletePresetByBid(db, bid);
+    });
   } catch (e: unknown) {
     if (e instanceof Error) {
-      throw new Error(`deleteButton: ${e.message}(bid=${btn.bid})`);
+      throw new Error(`deleteButton: ${e.message}(bid=${bid}, bName=${bName})`);
     }
-    throw e;
   }
+}
+
+export async function fetchButtonList(
+  db: SQLiteDatabase,
+): Promise<Pick<Buttons, "bid" | "bName">[]> {
+  return await db.getAllAsync<Pick<Buttons, "bid" | "bName">>(
+    `SELECT bid, bName FROM button ORDER BY bid`,
+  );
 }

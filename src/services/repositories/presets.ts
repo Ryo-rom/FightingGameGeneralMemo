@@ -108,7 +108,7 @@ export async function updatePresetButtons(
   }
 }
 
-export async function deletePreset(db: SQLiteDatabase, pid: string) {
+export async function deletePresetByPid(db: SQLiteDatabase, pid: string) {
   try {
     await db.withExclusiveTransactionAsync(async (txn) => {
       const numButtons = await txn.getFirstAsync<number>(
@@ -130,6 +130,26 @@ export async function deletePreset(db: SQLiteDatabase, pid: string) {
       throw new Error(`deletePreset: ${e.message}(pid = ${pid})`);
     }
     throw e;
+  }
+}
+
+export async function deletePresetByBid(db: SQLiteDatabase, bid: number) {
+  const rows = await db.getFirstAsync<number>(
+    `SELECT COUNT(*) FROM buttonPreset WHERE bid = ?`,
+    bid,
+  );
+  if (!rows) {
+    throw new Error(
+      `deletePresetByBid: Can't find any rows with bid = ${bid}.`,
+    );
+  }
+
+  try {
+    await runQuery(db, `DELETE FROM buttonPreset WHERE bid = ?`, [bid], rows);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      throw new Error(`deletePresetByBid: ${e.message}(bid=${bid})`);
+    }
   }
 }
 

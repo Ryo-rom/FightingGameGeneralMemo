@@ -1,6 +1,8 @@
 import type { Characters } from "@/data/types";
 import { runQuery } from "@/utils/repository";
 import { SQLiteDatabase } from "expo-sqlite";
+import { deleteButtonSetByChid } from "./buttonSet";
+import { deleteComboByChid } from "./combo";
 
 export async function insertCharacter(
   db: SQLiteDatabase,
@@ -40,10 +42,14 @@ export async function updateCharacter(
 
 export async function deleteCharacter(db: SQLiteDatabase, ch: Characters) {
   try {
-    await runQuery(db, `DELETE FROM character WHERE chid=? AND cName=?`, [
-      ch.chid,
-      ch.cName,
-    ]);
+    await db.withTransactionAsync(async () => {
+      await runQuery(db, `DELETE FROM character WHERE chid=? AND cName=?`, [
+        ch.chid,
+        ch.cName,
+      ]);
+      await deleteButtonSetByChid(db, ch.chid);
+      await deleteComboByChid(db, ch.chid);
+    });
   } catch (e: unknown) {
     if (e instanceof Error) {
       throw new Error(`deleteCharacter: ${e.message}(chid=${ch.chid})`);
