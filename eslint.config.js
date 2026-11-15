@@ -37,6 +37,11 @@ module.exports = defineConfig([
               target: ["./src/hooks/**"],
               message: "hooks 同士の import は禁止です",
             },
+            {
+              from: "./src/services/**",
+              target: ["./src/app/**", "./src/components/**"],
+              message: "app/components から services は直接 import 禁止",
+            },
           ],
         },
       ],
