@@ -30,7 +30,7 @@ export function Header() {
           {characters.map((c) => (
             <Picker.Item
               key={c.chid}
-              label={shortenText(c.name)}
+              label={shortenText(c.cName)}
               value={c.chid}
             />
           ))}

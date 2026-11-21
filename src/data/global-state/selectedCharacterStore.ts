@@ -1,7 +1,7 @@
 import type { Characters } from "@/data/types";
 import { create } from "zustand";
 
-const init: Characters = { chid: -1, name: "" };
+const init: Characters = { chid: -1, cName: "" };
 
 type selectedCharacterStore = {
   chara: Characters;
