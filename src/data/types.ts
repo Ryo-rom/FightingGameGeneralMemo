@@ -1,4 +1,4 @@
-export type Buttons = { bid: number; bName: string; index: number };
+export type Buttons = { bid: number; bName: string; idx: number };
 export type Characters = { chid: number; cName: string };
 export type Presets = { pid: number; pName: string };
 

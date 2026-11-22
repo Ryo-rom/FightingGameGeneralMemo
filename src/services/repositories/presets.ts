@@ -2,7 +2,7 @@ import type { Buttons } from "@/data/types";
 import { SQLiteDatabase } from "expo-sqlite";
 
 import type { Presets } from "@/data/types";
-import { runQuery } from "@/utils/repository";
+import { countRows, runQuery } from "@/utils/repository";
 
 export async function insertPreset(
   db: SQLiteDatabase,
@@ -10,8 +10,8 @@ export async function insertPreset(
   newPresetButtons: Buttons[],
 ) {
   try {
-    await db.withExclusiveTransactionAsync(async (txn) => {
-      const result1 = await txn.runAsync(
+    await db.withTransactionAsync(async () => {
+      const result1 = await db.runAsync(
         `INSERT INTO presetName(pName) VALUES(?)`,
         [newPresetName],
       );
@@ -19,22 +19,20 @@ export async function insertPreset(
         throw new Error("Fail inserting preset name.");
       }
 
-      const pid = await txn.getFirstAsync<number>(
-        `SELECT pId FROM presetName WHERE pName = ?`,
-        [newPresetName],
-      );
+      const pid = (
+        await db.getFirstAsync<{ p: number }>(
+          `SELECT pid AS p FROM presetName WHERE pName = ?`,
+          [newPresetName],
+        )
+      )?.p;
       if (!pid) {
         throw new Error("Fail finding pid.");
       }
 
       const placeholder = newPresetButtons.map(() => "(?, ?, ?)").join(", ");
-      const prms = newPresetButtons.flatMap<number>((b) => [
-        pid,
-        b.index,
-        b.bid,
-      ]);
+      const prms = newPresetButtons.flatMap<number>((b) => [pid, b.idx, b.bid]);
 
-      const result2 = await txn.runAsync(
+      const result2 = await db.runAsync(
         `INSERT INTO buttonPreset(pid, idx, bid) VALUES ${placeholder}`,
         prms,
       );
@@ -73,53 +71,48 @@ export async function updatePresetButtons(
   newButtons: Buttons[],
 ) {
   try {
-    await db.withExclusiveTransactionAsync(async (txn) => {
-      const numButtons = await txn.getFirstAsync<number>(
+    await db.withTransactionAsync(async () => {
+      const numButtons = await countRows(
+        db,
         `SELECT COUNT(*) FROM buttonPreset WHERE pid = ?`,
-        pid,
+        [pid],
       );
-      const deleteOlds = await txn.runAsync(
+      await runQuery(
+        db,
         `DELETE FROM buttonPreset WHERE pid = ?`,
-        pid,
+        [pid],
+        numButtons,
       );
-      if (deleteOlds.changes !== numButtons) {
-        throw new Error(
-          `Expected ${numButtons} to delete, but ${deleteOlds.changes} rows deleted while deleting buttons.`,
-        );
-      }
 
       const placeholder = newButtons.map(() => "(?, ?, ?)").join(", ");
-      const prms = newButtons.flatMap<number>((b) => [pid, b.index, b.bid]);
-      const result = await txn.runAsync(
+      const prms = newButtons.flatMap<number>((b) => [pid, b.idx, b.bid]);
+      await runQuery(
+        db,
         `INSERT INTO buttonPreset(pid, idx, bid) VALUES ${placeholder}`,
         prms,
+        newButtons.length,
       );
-      if (result.changes !== newButtons.length) {
-        throw new Error(
-          `Expected ${newButtons.length} rows to insert, but ${result.changes} rows inserted.`,
-        );
-      }
     });
   } catch (e: unknown) {
     if (e instanceof Error) {
       throw new Error(`updatePresetButtons: ${e.message}`);
     }
-    throw e;
   }
 }
 
 export async function deletePresetByPid(db: SQLiteDatabase, pid: string) {
   try {
-    await db.withExclusiveTransactionAsync(async (txn) => {
-      const numButtons = await txn.getFirstAsync<number>(
+    await db.withTransactionAsync(async () => {
+      const numButtons = await countRows(
+        db,
         `SELECT COUNT(*) FROM buttonPreset WHERE pid = ?`,
-        pid,
+        [pid],
       );
       if (!numButtons) throw new Error(`Can't get the number of buttons`);
 
-      await runQuery(txn, `DELETE FROM presetName WHERE pid = ?`, [pid]);
+      await runQuery(db, `DELETE FROM presetName WHERE pid = ?`, [pid]);
       await runQuery(
-        txn,
+        db,
         `DELETE FROM buttonPreset WHERE pid = ?`,
         [pid],
         numButtons,
@@ -134,16 +127,16 @@ export async function deletePresetByPid(db: SQLiteDatabase, pid: string) {
 }
 
 export async function deletePresetByBid(db: SQLiteDatabase, bid: number) {
-  const rows = await db.getFirstAsync<number>(
+  const rows = await countRows(
+    db,
     `SELECT COUNT(*) FROM buttonPreset WHERE bid = ?`,
-    bid,
+    [bid],
   );
   if (!rows) {
     throw new Error(
       `deletePresetByBid: Can't find any rows with bid = ${bid}.`,
     );
   }
-
   try {
     await runQuery(db, `DELETE FROM buttonPreset WHERE bid = ?`, [bid], rows);
   } catch (e: unknown) {

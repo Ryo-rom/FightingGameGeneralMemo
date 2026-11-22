@@ -1,7 +1,7 @@
 import { SQLiteDatabase } from "expo-sqlite";
 
 import type { Buttons } from "@/data/types";
-import { runQuery } from "@/utils/repository";
+import { countRows, runQuery } from "@/utils/repository";
 
 export async function insertButtonSet(
   db: SQLiteDatabase,
@@ -9,7 +9,7 @@ export async function insertButtonSet(
   buttons: Buttons[],
 ) {
   const placeholder = buttons.map(() => "(?, ?, ?)").join(", ");
-  const prms = buttons.flatMap<number>((b) => [chid, b.bid, b.index]);
+  const prms = buttons.flatMap<number>((b) => [chid, b.bid, b.idx]);
   try {
     await db.withTransactionAsync(async () => {
       const result = await db.runAsync(
@@ -38,7 +38,7 @@ export async function updateButtonSet(
 ) {
   const numButtons = buttons.length;
   const placeholder = buttons.map(() => "(?, ?, ?)").join(", ");
-  const prms = buttons.flatMap((b) => [chid, b.bid, b.index]);
+  const prms = buttons.flatMap((b) => [chid, b.bid, b.idx]);
 
   try {
     await db.withTransactionAsync(async () => {
@@ -62,9 +62,10 @@ export async function updateButtonSet(
 }
 
 export async function deleteButtonSetByChid(db: SQLiteDatabase, chid: number) {
-  const rows = await db.getFirstAsync<number>(
+  const rows: number = await countRows(
+    db,
     `SELECT COUNT(*) FROM buttonSet WHERE chid = ?`,
-    chid,
+    [chid],
   );
 
   if (!rows) {
@@ -83,9 +84,10 @@ export async function deleteButtonSetByChid(db: SQLiteDatabase, chid: number) {
 }
 
 export async function deleteButtonSetByBid(db: SQLiteDatabase, bid: number) {
-  const rows = await db.getFirstAsync<number>(
+  const rows: number = await countRows(
+    db,
     `SELECT COUNT(*) FROM buttonSet WHERE bid=?`,
-    bid,
+    [bid],
   );
   if (!rows) {
     throw new Error(
