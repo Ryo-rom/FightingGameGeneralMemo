@@ -21,3 +21,12 @@ export async function runQuery(
     );
   }
 }
+
+export async function countRows(
+  db: SQLiteDatabase,
+  sql: string,
+  prm: any[],
+): Promise<number> {
+  const result = await db.getFirstAsync<{ n: number }>(sql, prm);
+  return result?.n ?? 0;
+}
