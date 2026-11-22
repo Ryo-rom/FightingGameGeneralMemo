@@ -51,7 +51,7 @@ export async function deleteComboByCoid(db: SQLiteDatabase, coid: number) {
 }
 
 export async function deleteComboByChid(db: SQLiteDatabase, chid: number) {
-  const coids: number[] = await db.getAllAsync<number>(
+  const coids: { coid: number }[] = await db.getAllAsync<{ coid: number }>(
     `SELECT coid FROM combo WHERE chid = ?`,
     chid,
   );
@@ -69,7 +69,7 @@ export async function deleteComboByChid(db: SQLiteDatabase, chid: number) {
       await runQuery(
         db,
         `DELETE FROM comboSet WHERE coid = ${placeholder}`,
-        coids,
+        coids.map((i) => i.coid),
         coids.length,
       );
     });

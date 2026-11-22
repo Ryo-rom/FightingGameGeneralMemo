@@ -1,4 +1,4 @@
-import { runQuery } from "@/utils/repository";
+import { countRows, runQuery } from "@/utils/repository";
 import { SQLiteDatabase } from "expo-sqlite";
 
 import type { Tags } from "@/data/types";
@@ -45,9 +45,10 @@ export async function updateComboSet(
 
 export async function deleteComboSetByCoid(db: SQLiteDatabase, coid: number) {
   try {
-    const numCombos = await db.getFirstAsync<number>(
+    const numCombos: number = await countRows(
+      db,
       `SELECT COUNT(*) FROM comboSet WHERE coid = ?`,
-      coid,
+      [coid],
     );
     if (!numCombos) {
       throw new Error(`Can't find any rows by coid.`);
@@ -67,9 +68,10 @@ export async function deleteComboSetByCoid(db: SQLiteDatabase, coid: number) {
 
 export async function deleteComboSetByTid(db: SQLiteDatabase, tid: number) {
   try {
-    const numCombos = await db.getFirstAsync<number>(
+    const numCombos = await countRows(
+      db,
       `SELECT COUNT(*) FROM comboSet WHERE tid = ?`,
-      tid,
+      [tid],
     );
     if (!numCombos) {
       throw new Error(`Can't find any row by tid.`);
@@ -106,8 +108,10 @@ export async function fetchComboSetByTid(
   tid: number,
   value: number,
 ): Promise<number[]> {
-  return await db.getAllAsync(
-    `SELECT coid FROM comboSet WHERE tid = ? AND value = ?`,
-    [tid, value],
-  );
+  return (
+    await db.getAllAsync<{ coid: number }>(
+      `SELECT coid FROM comboSet WHERE tid = ? AND value = ?`,
+      [tid, value],
+    )
+  ).map((v) => v.coid);
 }
